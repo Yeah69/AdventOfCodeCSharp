@@ -13,6 +13,7 @@ internal class DayDecoratorTrackTime : IDay, IDecorator<IDay>
     }
     
     public int Number => _inner.Number;
+    public int? SampleNumber => _inner.SampleNumber;
     public string Input => _inner.Input;
     public string FirstPart()
     {
@@ -31,6 +32,8 @@ internal class DayDecoratorTrackTime : IDay, IDecorator<IDay>
         PrintTracking("Second", new TimeSpan(end - start));
         return result;
     }
+
+    public IEnumerable<IDay> Samples() => _inner.Samples();
 
     private void PrintTracking(string partLabel, TimeSpan time)
     {

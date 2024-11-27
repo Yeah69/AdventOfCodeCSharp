@@ -1,6 +1,6 @@
 ﻿namespace AdventOfCode.Days.Pickers;
 
-internal class PickLatestOnly : IDayPicker
+internal class PickLatestOnlyWithSamples : IDayPicker
 {
     public IEnumerable<IDay> PickDay(IReadOnlyList<IDay> days)
     {
@@ -8,7 +8,10 @@ internal class PickLatestOnly : IDayPicker
                 .OrderByDescending(d => d.Number)
                 .FirstOrDefault() is { } latest)
         {
-            yield return latest;
+            foreach (var picked in latest.Samples().Append(latest))
+            {
+                yield return picked;
+            }
         }
     }
 }

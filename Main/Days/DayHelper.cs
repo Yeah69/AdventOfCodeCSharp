@@ -6,9 +6,13 @@ internal static class DayHelper
     {
         Console.Write("Day ");
         ConsoleHelper.WriteColored(day.Number.ToString().PadLeft(2, '0'), ConsoleColor.DarkBlue);
-        Console.Write(" ");
-        ConsoleHelper.WriteColored(partLabel, ConsoleColor.Magenta);
+        if (day.SampleNumber is > 0)
+            ConsoleHelper.WriteColored($".{day.SampleNumber}", ConsoleColor.DarkYellow);
         if (!string.IsNullOrWhiteSpace(partLabel))
+        {
+            Console.Write(" ");
+            ConsoleHelper.WriteColored(partLabel, ConsoleColor.Magenta);
             Console.Write(" Part");
+        }
     }
 }

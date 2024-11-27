@@ -12,6 +12,7 @@ internal class DayDecoratorPrintSolution : IDay, IDecorator<IDay>
     }
     
     public int Number => _inner.Number;
+    public int? SampleNumber => _inner.SampleNumber;
     public string Input => _inner.Input;
     public string FirstPart()
     {
@@ -26,7 +27,9 @@ internal class DayDecoratorPrintSolution : IDay, IDecorator<IDay>
         PrintSolution(result, "Second");
         return result;
     }
-    
+
+    public IEnumerable<IDay> Samples() => _inner.Samples();
+
     private void PrintSolution(string solution, string partLabel)
     {
         DayHelper.WriteDayLabel(_inner, partLabel);

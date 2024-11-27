@@ -16,8 +16,22 @@ internal abstract class DayBase<T> : IDay where T : class, IDay
         }
     }
 
-    internal required int? SampleNumber { get; init; }
+    public required int? SampleNumber { get; init; }
+    
+    internal required Func<int?, T> SampleFactory { get; init; }
+    
+    internal required Func<IDay, DayDecoratorTrackTime> TrackTimeWrappingFactory { get; init; }
+    
+    internal required Func<IDay, DayDecoratorPrintSolution> PrintSolutionWrappingFactory { get; init; }
     
     public abstract string FirstPart();
     public abstract string SecondPart();
+    public IEnumerable<IDay> Samples()
+    {
+        var i = 0;
+        while (Inputs.ResourceManager.GetString($"{Number.ToString().PadLeft(2, '0')}.{(i + 1).ToString().PadLeft(2, '0')}") is not null)
+        {
+            yield return PrintSolutionWrappingFactory(TrackTimeWrappingFactory(SampleFactory(++i)));
+        }
+    }
 }
