@@ -20,14 +20,14 @@ internal static class ConsoleHelper
     }
     
     private static ConsoleColor TaskTimeColor(TimeSpan time) => time switch {
-        { TotalSeconds: < 1 } => ConsoleColor.Green,
-        { TotalMinutes: < 1 } => ConsoleColor.Yellow,
+        { TotalMilliseconds: < Consts.TotalTaskYellowMilliseconds } => ConsoleColor.Green,
+        { TotalMilliseconds: < Consts.TotalTaskRedMilliseconds } => ConsoleColor.Yellow,
         _ => ConsoleColor.Red
     };
     
     private static ConsoleColor WholeRunTimeColor(TimeSpan time) => time switch {
-        { TotalMinutes: < 1 } => ConsoleColor.Green,
-        { TotalMinutes: < 5 } => ConsoleColor.Yellow,
+        { TotalMinutes: < Consts.TotalWholeRunYellowMilliseconds } => ConsoleColor.Green,
+        { TotalMinutes: < Consts.TotalWholeRunRedMilliseconds } => ConsoleColor.Yellow,
         _ => ConsoleColor.Red
     };
     

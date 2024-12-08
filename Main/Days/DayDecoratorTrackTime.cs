@@ -6,12 +6,12 @@ namespace AdventOfCode.Days;
 internal class DayDecoratorTrackTime : IDay, IDecorator<IDay>
 {
     private readonly IDay _inner;
-    private readonly ITimeRegistry _timeRegistry;
+    private readonly ITimesRegistry _timesRegistry;
 
-    internal DayDecoratorTrackTime(IDay inner, ITimeRegistry timeRegistry)
+    internal DayDecoratorTrackTime(IDay inner, ITimesRegistry timesRegistry)
     {
         _inner = inner;
-        _timeRegistry = timeRegistry;
+        _timesRegistry = timesRegistry;
     }
     
     public int Number => _inner.Number;
@@ -48,6 +48,6 @@ internal class DayDecoratorTrackTime : IDay, IDecorator<IDay>
         Console.WriteLine(".");
         Console.WriteLine();
 
-        _timeRegistry.Register(this, isFirstPart, time);
+        _timesRegistry.Register(this, isFirstPart, time);
     }
 }

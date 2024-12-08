@@ -5,12 +5,12 @@ namespace AdventOfCode.Days;
 internal class DayDecoratorPrintSolution : IDay, IDecorator<IDay>
 {
     private readonly IDay _inner;
-    private readonly ICorrectnessRegistry _correctnessRegistry;
+    private readonly IResultsRegistry _resultsRegistry;
 
-    internal DayDecoratorPrintSolution(IDay inner, ICorrectnessRegistry correctnessRegistry)
+    internal DayDecoratorPrintSolution(IDay inner, IResultsRegistry resultsRegistry)
     {
         _inner = inner;
-        _correctnessRegistry = correctnessRegistry;
+        _resultsRegistry = resultsRegistry;
     }
 
     public int Number => _inner.Number;
@@ -42,9 +42,9 @@ internal class DayDecoratorPrintSolution : IDay, IDecorator<IDay>
         var taskLabel = $"{Number.TwoDigits()}{samplePart}{taskPart}";
         var knownSolution = Solutions.ResourceManager.GetString(taskLabel);
         var result = knownSolution is null 
-            ? CorrectnessStatus.Uncertain
-            : solution == knownSolution ? CorrectnessStatus.Correct : CorrectnessStatus.Incorrect;
-        _correctnessRegistry.Register(this, isFirstPart, result);
+            ? ResultStatus.Uncertain
+            : solution == knownSolution ? ResultStatus.Correct : ResultStatus.Incorrect;
+        _resultsRegistry.Register(this, isFirstPart, result);
         _inner.PrintLongDayLabel(isFirstPart);
         Console.Write(" Solution: ");
         ConsoleHelper.WriteLineColored(result.ToChar().ToString(), result.ToConsoleColor());
