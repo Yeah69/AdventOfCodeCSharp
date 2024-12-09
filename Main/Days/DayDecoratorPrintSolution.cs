@@ -47,10 +47,19 @@ internal class DayDecoratorPrintSolution : IDay, IDecorator<IDay>
         _resultsRegistry.Register(this, isFirstPart, result);
         _inner.PrintLongDayLabel(isFirstPart);
         Console.Write(" Solution: ");
-        ConsoleHelper.WriteLineColored(result.ToChar().ToString(), result.ToConsoleColor());
-        var foregroundColor = solution is Consts.NoSolutionFound or Consts.NothingToDoHere 
+        ConsoleHelper.WriteColored(result.ToChar().ToString(), result.ToConsoleColor());
+        if (result == ResultStatus.Incorrect)
+        {
+            Console.Write(" (");
+            ConsoleHelper.WriteColored(knownSolution ?? "", ConsoleColor.DarkGreen);
+            Console.Write(")");
+        }
+        Console.WriteLine();
+        var foregroundColor = solution is Consts.NoSolutionFound or Consts.NothingToDoHere || result == ResultStatus.Incorrect
             ? ConsoleColor.DarkRed 
-            : ConsoleColor.DarkGreen;
+            : result == ResultStatus.Uncertain 
+                ? ConsoleColor.DarkYellow 
+                : ConsoleColor.DarkGreen;
         ConsoleHelper.WriteLineColored(solution, foregroundColor);
         Console.WriteLine();
     }

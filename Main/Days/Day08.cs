@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode.Days;
+﻿using AdventOfCode.Extensions;
+
+namespace AdventOfCode.Days;
 
 internal class Day08 : DayBase<Day08>
 {

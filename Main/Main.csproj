@@ -24,27 +24,10 @@
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>Solutions.Designer.cs</LastGenOutput>
       </EmbeddedResource>
-      <EmbeddedResource Update="Inputs.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>Inputs.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-      <EmbeddedResource Update="Solutions.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>Solutions.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
+        <AdditionalFiles Include="Solutions.resx" />
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Inputs.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>Inputs.resx</DependentUpon>
-      </Compile>
-      <Compile Update="Solutions.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>Solutions.resx</DependentUpon>
-      </Compile>
       <Compile Update="Inputs.Designer.cs">
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>

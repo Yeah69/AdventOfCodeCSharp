@@ -1,4 +1,4 @@
-namespace AdventOfCode;
+namespace AdventOfCode.Extensions;
 
 internal static class IReadOnlyListExtensions
 {
