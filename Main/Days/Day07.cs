@@ -42,6 +42,8 @@ internal class Day07 : DayBase<Day07>
     {
         if (components.Length == 0)
             return previous == value;
+        if (previous > value)
+            return false;
         return CanBeSolved(components[1..], value, previous + components[0], withConcatenation)
                || CanBeSolved(components[1..], value, previous * components[0], withConcatenation)
                || withConcatenation 
