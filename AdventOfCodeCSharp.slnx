@@ -6,4 +6,5 @@
   </Folder>
   <Project Path="Main\Main.csproj" Type="Classic C#" />
   <Project Path="UnitTestGenerator\UnitTestGenerator.csproj" Type="Classic C#" />
+  <Project Path="UnitTests\UnitTests.csproj" Type="Classic C#" />
 </Solution>

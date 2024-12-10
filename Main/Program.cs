@@ -7,23 +7,26 @@ var container = Container.DIE_CreateContainer();
 var program = container.Create();
 program.Run();
 
-internal interface IProgram
+namespace AdventOfCode
 {
-    void Run();
-}
-
-internal class Prog : IProgram
-{
-    private readonly IDayRunner _dayRunner;
-
-    internal Prog(IDayRunner dayRunner)
+    internal interface IProgram
     {
-        _dayRunner = dayRunner;
+        void Run();
     }
-    
-    public void Run()
+
+    internal class Prog : IProgram
     {
-        _dayRunner.Run();
-        Console.WriteLine("Hello, World!");
+        private readonly IDayRunner _dayRunner;
+
+        internal Prog(IDayRunner dayRunner)
+        {
+            _dayRunner = dayRunner;
+        }
+    
+        public void Run()
+        {
+            _dayRunner.Run();
+            Console.WriteLine("Hello, World!");
+        }
     }
 }

@@ -2,7 +2,7 @@
 using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace AdventOfCodeCSharp.UnitTestGenerator;
+namespace AdventOfCode.UnitTestGenerator;
 
 [Generator]
 public class Generator : IIncrementalGenerator
@@ -23,9 +23,9 @@ public class Generator : IIncrementalGenerator
             var code = new StringBuilder();
             code.AppendLine(
                 """
-                namespace AdventOfCode;
+                namespace AdventOfCode.UnitTests;
 
-                public class UnitTests
+                public class Tests
                 {
                 """);
             foreach (var (dayLabel, solution) in s)
@@ -40,7 +40,7 @@ public class Generator : IIncrementalGenerator
                           public void Day{{dayNumber.ToString().PadLeft(2, '0')}}{{sampleTestName}}_{{part}}Part()
                           {
                               // Arrange
-                              var container = Container.DIE_CreateContainer();
+                              var container = global::AdventOfCode.Container.DIE_CreateContainer();
                               var dayPicker = container.CreatePickSpecific()({{dayNumber}}, {{sampleNumber}});
                               var days = container.CreateDays();
                               var day = dayPicker.PickDay(days).Single();
@@ -56,7 +56,7 @@ public class Generator : IIncrementalGenerator
                       """);
             }
             code.AppendLine("}");
-            spc.AddSource("UnitTests.g.cs", code.ToString());
+            spc.AddSource("Tests.g.cs", code.ToString());
         });
     }
 }

@@ -3,7 +3,7 @@
     <PropertyGroup>
         <OutputType>Library</OutputType>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <RootNamespace>AdventOfCodeCSharp.UnitTestGenerator</RootNamespace>
+        <RootNamespace>AdventOfCode.UnitTestGenerator</RootNamespace>
         <AssemblyName>AdventOfCodeCSharp.UnitTestGenerator</AssemblyName>
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
