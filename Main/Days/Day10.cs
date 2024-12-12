@@ -24,14 +24,6 @@ internal class Day10 : DayBase<Day10>
         }
         return map;
     }
-    
-    private static IEnumerable<(int X, int Y)> GetNeighbors((int X, int Y) currentPosition)
-    {
-        yield return (currentPosition.X - 1, currentPosition.Y);
-        yield return (currentPosition.X + 1, currentPosition.Y);
-        yield return (currentPosition.X, currentPosition.Y - 1);
-        yield return (currentPosition.X, currentPosition.Y + 1);
-    }
 
     private string Solve(IReadOnlyList<IReadOnlyList<int>> map, Func<(int X, int Y), long> getScore) =>
         map.SelectMany((row, y) => row.Select((cell, x) => (cell, x, y)))
@@ -53,7 +45,7 @@ internal class Day10 : DayBase<Day10>
                 yield return currentPosition;
                 yield break;
             }
-            var nextPositions = GetNeighbors(currentPosition)
+            var nextPositions = FourDirectionsUtils.GetNeighbors(currentPosition)
                 .Where(n => n.X >= 0 && n.X < map[0].Count && n.Y >= 0 && n.Y < map.Count 
                             && map[n.Y][n.X] == currentHeight + 1)
                 .SelectMany(GetReachablePeaks);
@@ -72,7 +64,7 @@ internal class Day10 : DayBase<Day10>
             var currentHeight = map[currentPosition.Y][currentPosition.X];
             if (currentHeight == 9)
                 return 1L;
-            return GetNeighbors(currentPosition)
+            return FourDirectionsUtils.GetNeighbors(currentPosition)
                 .Where(n => n.X >= 0 && n.X < map[0].Count && n.Y >= 0 && n.Y < map.Count 
                             && map[n.Y][n.X] == currentHeight + 1)
                 .Select(GetPathCounts)
