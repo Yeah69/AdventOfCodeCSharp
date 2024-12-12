@@ -49,7 +49,7 @@ internal class Day07 : DayBase<Day07>
                || withConcatenation 
                && CanBeSolved(components[1..], value, Concatenate(previous, components[0]), withConcatenation);
 
-        long Concatenate(long a, long b) => a * (long)Math.Pow(10, Math.Floor(Math.Log10(b) + 1)) + b;
+        long Concatenate(long a, long b) => a * (long)Math.Pow(10, MathUtils.GetDigitCount(b)) + b;
     }
     
     private string Solve(bool withConcatenation) => _input
