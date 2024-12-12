@@ -1,15 +1,13 @@
 ﻿namespace AdventOfCode.Days;
 
-internal class Day05 : DayBase<Day05>
+internal class Day05 : DayBase<Day05, Day05.Data>
 {
-    private record Rule(long First, long Second);
-    private record Data(IReadOnlyList<Rule> Rules, IReadOnlyList<IReadOnlyList<long>> Updates);
+    internal record Rule(long First, long Second);
+    internal record Data(IReadOnlyList<Rule> Rules, IReadOnlyList<IReadOnlyList<long>> Updates);
     
     public override int Number => 5;
-    private readonly Lazy<Data> _input;
-    internal Day05() => _input = new(ParseInput);
 
-    private Data ParseInput()
+    protected override Data ParseInput()
     {
         var rules = new List<Rule>();
         var updates = new List<IReadOnlyList<long>>();
@@ -78,7 +76,7 @@ internal class Day05 : DayBase<Day05>
     {
         var result = 0L;
         
-        var data = _input.Value;
+        var data = ParsedInput.Value;
         foreach (var update in data.Updates)
         {
             var check = Check(data.Rules, update);
@@ -93,7 +91,7 @@ internal class Day05 : DayBase<Day05>
     {
         var result = 0L;
         
-        var data = _input.Value;
+        var data = ParsedInput.Value;
         foreach (var updateOriginal in data.Updates)
         {
             var update = updateOriginal.ToArray();

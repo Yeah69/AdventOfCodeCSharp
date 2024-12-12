@@ -2,15 +2,13 @@
 
 namespace AdventOfCode.Days;
 
-internal class Day08 : DayBase<Day08>
+internal class Day08 : DayBase<Day08, Day08.Data>
 {
-    private record Data(long Height, long Width, IReadOnlyDictionary<char, IReadOnlyList<(long X, long Y)>> AntennaMap);
+    internal record Data(long Height, long Width, IReadOnlyDictionary<char, IReadOnlyList<(long X, long Y)>> AntennaMap);
     
     public override int Number => 8;
-    private readonly Lazy<Data> _input;
-    internal Day08() => _input = new(ParseInput);
 
-    private Data ParseInput()
+    protected override Data ParseInput()
     {
         var inputSpan = Input.AsSpan();
         var lineRanges = inputSpan.Split(Environment.NewLine);
@@ -37,7 +35,7 @@ internal class Day08 : DayBase<Day08>
     
     public override string FirstPart()
     {
-        var data = _input.Value;
+        var data = ParsedInput.Value;
         var height = data.Height;
         var width = data.Width;
         var antennaMap = data.AntennaMap;
@@ -67,7 +65,7 @@ internal class Day08 : DayBase<Day08>
 
     public override string SecondPart()
     {
-        var data = _input.Value;
+        var data = ParsedInput.Value;
         var height = data.Height;
         var width = data.Width;
         var antennaMap = data.AntennaMap;

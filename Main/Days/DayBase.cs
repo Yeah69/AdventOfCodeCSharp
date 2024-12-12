@@ -1,7 +1,11 @@
 ﻿namespace AdventOfCode.Days;
 
-internal abstract class DayBase<T> : IDay where T : class, IDay
+internal abstract class DayBase<TDay, TData> : IDay where TDay : class, IDay
 {
+    private protected readonly Lazy<TData> ParsedInput;
+    
+    protected DayBase() => ParsedInput = new Lazy<TData>(ParseInput);
+
     public abstract int Number { get; }
 
     public string Input
@@ -18,12 +22,14 @@ internal abstract class DayBase<T> : IDay where T : class, IDay
 
     public required int? SampleNumber { get; init; }
     
-    internal required Func<int?, T> SampleFactory { get; init; }
+    internal required Func<int?, TDay> SampleFactory { get; init; }
     
     internal required Func<IDay, DayDecoratorTrackTime> TrackTimeWrappingFactory { get; init; }
     
     internal required Func<IDay, DayDecoratorPrintSolution> PrintSolutionWrappingFactory { get; init; }
-    
+
+    public void PrepareInputParsing() => _ = ParsedInput.Value;
+    protected abstract TData ParseInput();
     public abstract string FirstPart();
     public abstract string SecondPart();
     public IEnumerable<IDay> Samples()
@@ -35,7 +41,7 @@ internal abstract class DayBase<T> : IDay where T : class, IDay
         }
     }
 
-    public void PrintLongDayLabel(bool? isFirstPart = null)
+    public void PrintLongDayLabel(Stage? stage)
     {
         ConsoleHelper.WriteColored($"Day {Number.TwoDigits()}", ConsoleColor.DarkBlue);
         if (SampleNumber is > 0)
@@ -43,15 +49,14 @@ internal abstract class DayBase<T> : IDay where T : class, IDay
             Console.Write(" ");
             ConsoleHelper.WriteColored($"Sample {SampleNumber?.TwoDigits()}", ConsoleColor.DarkYellow);
         }
-        if (isFirstPart is null) 
+        if (stage is null) 
             return;
+        var definitiveStage = stage.Value;
         Console.Write(" ");
-        var partLabel = isFirstPart.Value ? "First" : "Second";
-        var partColor = isFirstPart.Value ? ConsoleColor.DarkMagenta : ConsoleColor.DarkCyan;
-        ConsoleHelper.WriteColored($"{partLabel} Part", partColor);
+        ConsoleHelper.WriteColored(definitiveStage.ToLongLabel(), definitiveStage.ToColor());
     }
 
-    public void PrintShortDayLabel(bool isFirstPart)
+    public void PrintShortDayLabel(Stage stage)
     {
         ConsoleHelper.WriteColored(Number.TwoDigits(), ConsoleColor.DarkBlue);
         if (SampleNumber is > 0)
@@ -59,15 +64,12 @@ internal abstract class DayBase<T> : IDay where T : class, IDay
             Console.Write(".");
             ConsoleHelper.WriteColored(SampleNumber?.TwoDigits() ?? "", ConsoleColor.DarkYellow);
         }
-        var partLabel = isFirstPart ? "I" : "II";
-        var partColor = isFirstPart ? ConsoleColor.DarkMagenta : ConsoleColor.DarkCyan;
-        ConsoleHelper.WriteColored(partLabel, partColor);
+        ConsoleHelper.WriteColored(stage.ToShortLabel(), stage.ToColor());
     }
 
-    public string GetShortDayLabelText(bool isFirstPart)
+    public string GetShortDayLabelText(Stage stage)
     {
         var samplePart = SampleNumber is > 0 ? $".{SampleNumber?.TwoDigits() ?? ""}" : "";
-        var partLabel = isFirstPart ? "I" : "II";
-        return $"{Number.TwoDigits()}{samplePart}{partLabel}";
+        return $"{Number.TwoDigits()}{samplePart}{stage.ToShortLabel()}";
     }
 }

@@ -2,13 +2,11 @@
 
 namespace AdventOfCode.Days;
 
-internal class Day02 : DayBase<Day02>
+internal class Day02 : DayBase<Day02, List<ImmutableArray<long>>>
 {
     public override int Number => 2;
-    private readonly Lazy<List<ImmutableArray<long>>> _input;
-    internal Day02() => _input = new(ParseInput);
 
-    private List<ImmutableArray<long>> ParseInput()
+    protected override List<ImmutableArray<long>> ParseInput()
     {
         var wholeReport = new List<ImmutableArray<long>>();
         var inputSpan = Input.AsSpan();
@@ -44,13 +42,13 @@ internal class Day02 : DayBase<Day02>
         return isSafe;
     }
     
-    public override string FirstPart() => _input.Value.Select(IsSafe).LongCount(isSafe => isSafe).ToString();
+    public override string FirstPart() => ParsedInput.Value.Select(IsSafe).LongCount(isSafe => isSafe).ToString();
 
     public override string SecondPart()
     {
         var safeCount = 0L;
         
-        foreach (var report in _input.Value)
+        foreach (var report in ParsedInput.Value)
         {
             if (IsSafe(report))
             {

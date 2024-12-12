@@ -1,12 +1,10 @@
 ﻿namespace AdventOfCode.Days;
 
-internal class Day09 : DayBase<Day09>
+internal class Day09 : DayBase<Day09, IReadOnlyList<long>>
 {
     public override int Number => 9;
-    private readonly Lazy<IReadOnlyList<long>> _input;
-    internal Day09() => _input = new(ParseInput);
     
-    private IReadOnlyList<long> ParseInput()
+    protected override IReadOnlyList<long> ParseInput()
     {
         var inputSpan = Input.AsSpan();
         var digits = new List<long>();
@@ -21,7 +19,7 @@ internal class Day09 : DayBase<Day09>
 
     public override string FirstPart()
     {
-        var digits = _input.Value;
+        var digits = ParsedInput.Value;
         var allocationSpaceCount = digits.Sum();
         var allocation = new long?[allocationSpaceCount];
         var i = 0L;
@@ -75,7 +73,7 @@ internal class Day09 : DayBase<Day09>
 
     public override string SecondPart()
     {
-        var digits = _input.Value;
+        var digits = ParsedInput.Value;
         var currentFileId = 0L;
         var currentFreeSpaceId = 0L;
         var start = new AllocationNode.File(currentFileId++, digits[0]);

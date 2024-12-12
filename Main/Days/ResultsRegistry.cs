@@ -9,18 +9,18 @@ internal interface IResultsPrinter
 
 internal interface IResultsRegistry
 {
-    void Register(IDay day, bool isFirstPart, ResultStatus status);
+    void Register(IDay day, Stage stage, ResultStatus status);
 }
 
 internal class ResultsRegistry : IResultsRegistry, IResultsPrinter, IScopeInstance
 {
-    private readonly Dictionary<ResultStatus, List<(IDay Day, bool IsFirstPart)>> _results = new()
+    private readonly Dictionary<ResultStatus, List<(IDay Day, Stage Stage)>> _results = new()
     {
         [ResultStatus.Incorrect] = [],
         [ResultStatus.Uncertain] = [],
         [ResultStatus.Correct] = []
     };
-    public void Register(IDay day, bool isFirstPart, ResultStatus status) => _results[status].Add((day, isFirstPart));
+    public void Register(IDay day, Stage stage, ResultStatus status) => _results[status].Add((day, stage));
     public void Print()
     {
         Console.WriteLine("Results Summary:");
@@ -33,11 +33,11 @@ internal class ResultsRegistry : IResultsRegistry, IResultsPrinter, IScopeInstan
             else
             {
                 var first = tasks.First();
-                first.Day.PrintShortDayLabel(first.IsFirstPart);
-                foreach (var (day, isFirstPart) in tasks.Skip(1))
+                first.Day.PrintShortDayLabel(first.Stage);
+                foreach (var (day, stage) in tasks.Skip(1))
                 {
                     Console.Write(", ");
-                    day.PrintShortDayLabel(isFirstPart);
+                    day.PrintShortDayLabel(stage);
                 }
                 Console.WriteLine();
             }

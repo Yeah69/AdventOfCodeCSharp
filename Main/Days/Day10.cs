@@ -1,12 +1,10 @@
 ﻿namespace AdventOfCode.Days;
 
-internal class Day10 : DayBase<Day10>
+internal class Day10 : DayBase<Day10, IReadOnlyList<IReadOnlyList<int>>>
 {
     public override int Number => 10;
-    private readonly Lazy<IReadOnlyList<IReadOnlyList<int>>> _input;
-    internal Day10() => _input = new(ParseInput);
 
-    private IReadOnlyList<IReadOnlyList<int>> ParseInput()
+    protected override IReadOnlyList<IReadOnlyList<int>> ParseInput()
     {
         var map = new List<IReadOnlyList<int>>();
         
@@ -34,7 +32,7 @@ internal class Day10 : DayBase<Day10>
 
     public override string FirstPart()
     {
-        var map = _input.Value;
+        var map = ParsedInput.Value;
         return Solve(map, p => GetReachablePeaks(p).Distinct().Count());
 
         IEnumerable<(int X, int Y)> GetReachablePeaks((int X, int Y) currentPosition)
@@ -56,7 +54,7 @@ internal class Day10 : DayBase<Day10>
 
     public override string SecondPart()
     {
-        var map = _input.Value;
+        var map = ParsedInput.Value;
         return Solve(map, GetPathCounts);
 
         long GetPathCounts((int X, int Y) currentPosition)

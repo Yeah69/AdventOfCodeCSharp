@@ -34,6 +34,7 @@ internal class DayRunner : IDayRunner, IScopeRoot
         foreach (var day in _picker.PickDay(_days))
         {
             PrintInput(day);
+            day.PrepareInputParsing();
             day.FirstPart();
             day.SecondPart();
         }

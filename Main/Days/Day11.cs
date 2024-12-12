@@ -1,12 +1,10 @@
 ﻿namespace AdventOfCode.Days;
 
-internal class Day11 : DayBase<Day11>
+internal class Day11 : DayBase<Day11, IReadOnlyList<long>>
 {
     public override int Number => 11;
-    private readonly Lazy<IReadOnlyList<long>> _input;
-    internal Day11() => _input = new(ParseInput);
 
-    private IReadOnlyList<long> ParseInput()
+    protected override IReadOnlyList<long> ParseInput()
     {
         var list = new List<long>();
         
@@ -35,7 +33,7 @@ internal class Day11 : DayBase<Day11>
     
     public override string FirstPart()
     {
-        return _input.Value
+        return ParsedInput.Value
             .Sum(number => CountOfStones(number, 25))
             .ToString();
 
@@ -52,7 +50,7 @@ internal class Day11 : DayBase<Day11>
 
     public override string SecondPart()
     {
-        var numbers = _input.Value.CountBy(n => n)
+        var numbers = ParsedInput.Value.CountBy(n => n)
             .ToDictionary(g => g.Key, g => (long) g.Value);
         for (var i = 0; i < 75; i++)
         {

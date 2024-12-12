@@ -1,10 +1,8 @@
 ﻿namespace AdventOfCode.Days;
 
-internal class Day03 : DayBase<Day03>
+internal class Day03 : DayBase<Day03, string>
 {
     public override int Number => 3;
-    private readonly Lazy<string> _input;
-    internal Day03() => _input = new(() => Input);
 
     private string Solve(bool withDoDont)
     {
@@ -13,7 +11,7 @@ internal class Day03 : DayBase<Day03>
         var dontSpan = "don't()".AsSpan();
         var result = 0L;
         var isEnabled = true;
-        var currentSpan = _input.Value.AsSpan();
+        var currentSpan = ParsedInput.Value.AsSpan();
         while (currentSpan.Length > 0)
         {
             if (currentSpan.StartsWith(multStartSpan) && isEnabled)
@@ -61,7 +59,9 @@ internal class Day03 : DayBase<Day03>
             return long.Parse(numberSpan);
         }
     }
-    
+
+    protected override string ParseInput() => Input;
+
     public override string FirstPart() => Solve(withDoDont: false);
 
     public override string SecondPart() => Solve(withDoDont: true);

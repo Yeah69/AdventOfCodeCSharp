@@ -2,16 +2,14 @@
 
 namespace AdventOfCode.Days;
 
-internal class Day06 : DayBase<Day06>
+internal class Day06 : DayBase<Day06, Day06.Data>
 {
-    private record Data(long Width, long Height, (long X, long Y) Start, ImmutableHashSet<(long X, long Y)> Obstacles);
+    internal record Data(long Width, long Height, (long X, long Y) Start, ImmutableHashSet<(long X, long Y)> Obstacles);
     public override int Number => 6;
-    private readonly Lazy<Data> _input;
-    internal Day06() => _input = new(ParseInput);
     
     private enum FourDirections { North, East, South, West }
 
-    private Data ParseInput()
+    protected override Data ParseInput()
     {
         var inputSpan = Input.AsSpan();
         var width = 0L;
@@ -64,7 +62,7 @@ internal class Day06 : DayBase<Day06>
     
     public override string FirstPart()
     {
-        var data = _input.Value;
+        var data = ParsedInput.Value;
         var currentPosition = data.Start;
         var currentDirection = FourDirections.North;
         var reachedPositions = new HashSet<(long X, long Y)> { currentPosition };
@@ -90,7 +88,7 @@ internal class Day06 : DayBase<Day06>
     public override string SecondPart()
     {
         var result = 0L;
-        var data = _input.Value;
+        var data = ParsedInput.Value;
         for (var y = 0L; y < data.Height; y++)
         {
             for (var x = 0L; x < data.Width; x++)

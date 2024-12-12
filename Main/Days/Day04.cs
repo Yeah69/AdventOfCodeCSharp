@@ -1,9 +1,8 @@
 ﻿namespace AdventOfCode.Days;
 
-internal class Day04 : DayBase<Day04>
+internal class Day04 : DayBase<Day04, string>
 {
     public override int Number => 4;
-    private readonly Lazy<string> _input;
     private readonly EightDirections[] _directions =
     [
         EightDirections.North,
@@ -15,7 +14,6 @@ internal class Day04 : DayBase<Day04>
         EightDirections.West,
         EightDirections.NorthWest
     ];
-    internal Day04() => _input = new(() => Input);
 
     internal enum EightDirections
     {
@@ -28,10 +26,12 @@ internal class Day04 : DayBase<Day04>
             return false;
         return lines[ly][lx] == letter;
     }
-    
+
+    protected override string ParseInput() => Input;
+
     public override string FirstPart()
     {
-        var lines = _input.Value.Split(Environment.NewLine);
+        var lines = ParsedInput.Value.Split(Environment.NewLine);
         var xmasCount = 0;
 
         for (var y = 0; y < lines.Length; y++)
@@ -82,7 +82,7 @@ internal class Day04 : DayBase<Day04>
 
     public override string SecondPart()
     {
-        var lines = _input.Value.Split(Environment.NewLine);
+        var lines = ParsedInput.Value.Split(Environment.NewLine);
         var xmasCount = 0;
 
         for (var y = 0; y < lines.Length; y++)

@@ -7,11 +7,12 @@ internal interface IDay
     int? SampleNumber { get; }
     
     string Input { get; }
-    
+
+    void PrepareInputParsing();
     string FirstPart(); 
     string SecondPart();
     IEnumerable<IDay> Samples();
-    void PrintLongDayLabel(bool? isFirstPart = null);
-    void PrintShortDayLabel(bool isFirstPart);
-    string GetShortDayLabelText(bool isFirstPart);
+    void PrintLongDayLabel(Stage? stage = null);
+    void PrintShortDayLabel(Stage stage);
+    string GetShortDayLabelText(Stage stage);
 }

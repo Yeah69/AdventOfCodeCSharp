@@ -2,14 +2,12 @@
 
 namespace AdventOfCode.Days;
 
-internal class Day07 : DayBase<Day07>
+internal class Day07 : DayBase<Day07, IReadOnlyList<Day07.Equation>>
 {
-    private record Equation(long Value, List<long> Components);
+    internal record Equation(long Value, List<long> Components);
     public override int Number => 7;
-    private readonly Lazy<IReadOnlyList<Equation>> _input;
-    internal Day07() => _input = new(ParseInput);
 
-    private IReadOnlyList<Equation> ParseInput()
+    protected override IReadOnlyList<Equation> ParseInput()
     {
         var inputSpan = Input.AsSpan();
         var equations = new List<Equation>();
@@ -52,7 +50,7 @@ internal class Day07 : DayBase<Day07>
         long Concatenate(long a, long b) => a * (long)Math.Pow(10, MathUtils.GetDigitCount(b)) + b;
     }
     
-    private string Solve(bool withConcatenation) => _input
+    private string Solve(bool withConcatenation) => ParsedInput
         .Value
         .Where(equation =>
         {

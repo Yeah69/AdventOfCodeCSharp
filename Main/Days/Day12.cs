@@ -1,14 +1,10 @@
-﻿using System.Collections.Frozen;
+﻿namespace AdventOfCode.Days;
 
-namespace AdventOfCode.Days;
-
-internal class Day12 : DayBase<Day12>
+internal class Day12 : DayBase<Day12, IReadOnlyList<((int X, int Y), char C)>>
 {
     public override int Number => 12;
-    private readonly Lazy<IReadOnlyList<((int X, int Y), char C)>> _input;
-    internal Day12() => _input = new(ParseInput);
 
-    private IReadOnlyList<((int X, int Y), char C)> ParseInput()
+    protected override IReadOnlyList<((int X, int Y), char C)> ParseInput()
     {
         var list = new List<((int X, int Y), char C)>();
         var inputSpan = Input.AsSpan();
@@ -30,7 +26,7 @@ internal class Day12 : DayBase<Day12>
     public override string FirstPart()
     {
         var price = 0L;
-        var plots = _input.Value;
+        var plots = ParsedInput.Value;
         
         var groupedByPlant = plots.GroupBy(p => p.C, p => p.Item1);
         
@@ -70,7 +66,7 @@ internal class Day12 : DayBase<Day12>
     public override string SecondPart()
     {
         var price = 0L;
-        var plots = _input.Value;
+        var plots = ParsedInput.Value;
         
         var groupedByPlant = plots.GroupBy(p => p.C, p => p.Item1);
         

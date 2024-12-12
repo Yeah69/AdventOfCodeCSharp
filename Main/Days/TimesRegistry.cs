@@ -9,13 +9,13 @@ internal interface ITimesPrinter
 
 internal interface ITimesRegistry
 {
-    void Register(IDay day, bool isFirstPart, TimeSpan duration);
+    void Register(IDay day, Stage stage, TimeSpan duration);
 }
 
 internal class TimesRegistry : ITimesRegistry, ITimesPrinter, IScopeInstance
 {
-    private readonly List<(IDay Day, bool IsFirstPart, TimeSpan Duration)> _results = [];
-    public void Register(IDay day, bool isFirstPart, TimeSpan duration) => _results.Add((day, isFirstPart, duration));
+    private readonly List<(IDay Day, Stage Stage, TimeSpan Duration)> _results = [];
+    public void Register(IDay day, Stage stage, TimeSpan duration) => _results.Add((day, stage, duration));
     public void Print()
     {
         var maybeMaxTime = _results.Count > 0 
@@ -24,7 +24,7 @@ internal class TimesRegistry : ITimesRegistry, ITimesPrinter, IScopeInstance
         Console.WriteLine("Times Summary:");
         if (maybeMaxTime is { } maxTime)
         {
-            var maxLabelLength = _results.Select(t => t.Day.GetShortDayLabelText(false)).Max(x => x.Length);
+            var maxLabelLength = _results.Select(t => t.Day.GetShortDayLabelText(Stage.SecondPart)).Max(x => x.Length);
             var timeSpanTextLength = new TimeSpan(0, 23, 59, 59, 999, 999).ToString().Length;
             var barLength = Console.WindowWidth - maxLabelLength - 2 /* delimiting spaces */ - timeSpanTextLength;
             
@@ -33,9 +33,9 @@ internal class TimesRegistry : ITimesRegistry, ITimesPrinter, IScopeInstance
             var yellowUnitCount = (int) (Consts.TotalTaskRedMilliseconds / timeUnit) - greenUnitCount;
             var sortedTimeRecords = _results.OrderBy(x => x.Duration);
             
-            foreach (var (day, isFirstPart, duration) in sortedTimeRecords)
+            foreach (var (day, stage, duration) in sortedTimeRecords)
             {
-                var dayLabelLength = day.GetShortDayLabelText(isFirstPart).Length;
+                var dayLabelLength = day.GetShortDayLabelText(stage).Length;
                 var timeUnitCount = (int) (duration.TotalMilliseconds / timeUnit);
                 var greens = Math.Max(Math.Min(timeUnitCount, greenUnitCount), 1);
                 timeUnitCount -= greenUnitCount;
@@ -43,7 +43,7 @@ internal class TimesRegistry : ITimesRegistry, ITimesPrinter, IScopeInstance
                 timeUnitCount -= yellowUnitCount;
                 var reds = Math.Max(timeUnitCount, 0);
                 var remainingSpaces = barLength - greens - yellows - reds;
-                day.PrintShortDayLabel(isFirstPart);
+                day.PrintShortDayLabel(stage);
                 Console.Write($"{"".PadRight(maxLabelLength - dayLabelLength, ' ')} ");
                 ConsoleHelper.WriteColored("".PadRight(greens, '|'), ConsoleColor.DarkGreen);
                 ConsoleHelper.WriteColored("".PadRight(yellows, '|'), ConsoleColor.DarkYellow);

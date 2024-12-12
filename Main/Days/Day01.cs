@@ -1,14 +1,10 @@
 ﻿namespace AdventOfCode.Days;
 
-internal class Day01 : DayBase<Day01>
+internal class Day01 : DayBase<Day01, (List<long> Left, List<long> Right)>
 {
     public override int Number => 1;
 
-    internal Day01() => _input = new(ParseInput);
-
-    private readonly Lazy<(List<long> Left, List<long> Right)> _input;
-
-    private (List<long> Left, List<long> Right) ParseInput()
+    protected override (List<long> Left, List<long> Right) ParseInput()
     {
         var inputSpan = Input.AsSpan();
         var lineRanges = inputSpan.Split(Environment.NewLine);
@@ -36,15 +32,15 @@ internal class Day01 : DayBase<Day01>
     }
     
     public override string FirstPart() => 
-        _input.Value.Left.Order()
-            .Zip(_input.Value.Right.Order(), (first, second) => Math.Abs(first - second))
+        ParsedInput.Value.Left.Order()
+            .Zip(ParsedInput.Value.Right.Order(), (first, second) => Math.Abs(first - second))
             .Sum()
             .ToString();
 
     public override string SecondPart()
     {
-        var rightGrouped = _input.Value.Right.CountBy(number => number).ToDictionary(group => group.Key, group => group.Value);
-        return _input.Value.Left
+        var rightGrouped = ParsedInput.Value.Right.CountBy(number => number).ToDictionary(group => group.Key, group => group.Value);
+        return ParsedInput.Value.Left
             .Select(left => left * (rightGrouped.TryGetValue(left, out var value) ? value : 0L))
             .Sum()
             .ToString();

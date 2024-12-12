@@ -16,36 +16,37 @@ internal class DayDecoratorPrintSolution : IDay, IDecorator<IDay>
     public int Number => _inner.Number;
     public int? SampleNumber => _inner.SampleNumber;
     public string Input => _inner.Input;
+    public void PrepareInputParsing() => _inner.PrepareInputParsing();
+
     public string FirstPart()
     {
         var result = _inner.FirstPart();
-        PrintSolution(result, true);
+        PrintSolution(result, Stage.FirstPart);
         return result;
     }
 
     public string SecondPart()
     {
         var result = _inner.SecondPart();
-        PrintSolution(result, false);
+        PrintSolution(result, Stage.SecondPart);
         return result;
     }
 
     public IEnumerable<IDay> Samples() => _inner.Samples();
-    public void PrintLongDayLabel(bool? isFirstPart = null) => _inner.PrintLongDayLabel(isFirstPart);
-    public void PrintShortDayLabel(bool isFirstPart) => _inner.PrintShortDayLabel(isFirstPart);
-    public string GetShortDayLabelText(bool isFirstPart) => _inner.GetShortDayLabelText(isFirstPart);
+    public void PrintLongDayLabel(Stage? stage = null) => _inner.PrintLongDayLabel(stage);
+    public void PrintShortDayLabel(Stage stage) => _inner.PrintShortDayLabel(stage);
+    public string GetShortDayLabelText(Stage stage) => _inner.GetShortDayLabelText(stage);
 
-    private void PrintSolution(string solution, bool isFirstPart)
+    private void PrintSolution(string solution, Stage stage)
     {
         var samplePart = SampleNumber is > 0 ? $".{(SampleNumber ?? 0).TwoDigits()}" : string.Empty;
-        var taskPart = isFirstPart ? "I" : "II";
-        var taskLabel = $"{Number.TwoDigits()}{samplePart}{taskPart}";
+        var taskLabel = $"{Number.TwoDigits()}{samplePart}{stage.ToShortLabel()}";
         var knownSolution = Solutions.ResourceManager.GetString(taskLabel);
         var result = knownSolution is null 
             ? ResultStatus.Uncertain
             : solution == knownSolution ? ResultStatus.Correct : ResultStatus.Incorrect;
-        _resultsRegistry.Register(this, isFirstPart, result);
-        _inner.PrintLongDayLabel(isFirstPart);
+        _resultsRegistry.Register(this, stage, result);
+        _inner.PrintLongDayLabel(stage);
         Console.Write(" Solution: ");
         ConsoleHelper.WriteColored(result.ToChar().ToString(), result.ToConsoleColor());
         if (result == ResultStatus.Incorrect)

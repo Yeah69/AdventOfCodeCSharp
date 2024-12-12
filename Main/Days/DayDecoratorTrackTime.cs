@@ -17,12 +17,20 @@ internal class DayDecoratorTrackTime : IDay, IDecorator<IDay>
     public int Number => _inner.Number;
     public int? SampleNumber => _inner.SampleNumber;
     public string Input => _inner.Input;
+    public void PrepareInputParsing()
+    {
+        var start = Stopwatch.GetTimestamp();
+        _inner.PrepareInputParsing();
+        var end = Stopwatch.GetTimestamp();
+        PrintTracking(Stage.Parsing, Stopwatch.GetElapsedTime(start, end));
+    }
+
     public string FirstPart()
     {
         var start = Stopwatch.GetTimestamp();
         var result = _inner.FirstPart();
         var end = Stopwatch.GetTimestamp();
-        PrintTracking(true, Stopwatch.GetElapsedTime(start, end));
+        PrintTracking(Stage.FirstPart, Stopwatch.GetElapsedTime(start, end));
         return result;
     }
 
@@ -31,23 +39,23 @@ internal class DayDecoratorTrackTime : IDay, IDecorator<IDay>
         var start = Stopwatch.GetTimestamp();
         var result = _inner.SecondPart();
         var end = Stopwatch.GetTimestamp();
-        PrintTracking(false, Stopwatch.GetElapsedTime(start, end));
+        PrintTracking(Stage.SecondPart, Stopwatch.GetElapsedTime(start, end));
         return result;
     }
 
     public IEnumerable<IDay> Samples() => _inner.Samples();
-    public void PrintLongDayLabel(bool? isFirstPart = null) => _inner.PrintLongDayLabel(isFirstPart);
-    public void PrintShortDayLabel(bool isFirstPart) => _inner.PrintShortDayLabel(isFirstPart);
-    public string GetShortDayLabelText(bool isFirstPart) => _inner.GetShortDayLabelText(isFirstPart);
+    public void PrintLongDayLabel(Stage? stage = null) => _inner.PrintLongDayLabel(stage);
+    public void PrintShortDayLabel(Stage stage) => _inner.PrintShortDayLabel(stage);
+    public string GetShortDayLabelText(Stage stage) => _inner.GetShortDayLabelText(stage);
 
-    private void PrintTracking(bool isFirstPart, TimeSpan time)
+    private void PrintTracking(Stage stage, TimeSpan time)
     {
-        _inner.PrintLongDayLabel();
+        _inner.PrintLongDayLabel(stage);
         Console.Write(" Solution took ");
         ConsoleHelper.PrintTaskTime(time);
         Console.WriteLine(".");
         Console.WriteLine();
 
-        _timesRegistry.Register(this, isFirstPart, time);
+        _timesRegistry.Register(this, stage, time);
     }
 }
