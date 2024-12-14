@@ -4,7 +4,7 @@ using MrMeeseeks.DIE.Configuration.Attributes;
 
 namespace AdventOfCode;
 
-[ImplementationChoice(typeof(IDayPicker), typeof(PickLatestOnlyWithSamples))]
+[ImplementationChoice(typeof(IDayPicker), typeof(PickHardcoded))]
 [DecoratorSequenceChoice(typeof(IDay), typeof(IDay), typeof(DayDecoratorTrackTime), typeof(DayDecoratorPrintSolution))]
 [CreateFunction(typeof(IProgram), "Create")]
 [CreateFunction(typeof(Func<long, long?, PickSpecific>), "CreatePickSpecific")]
