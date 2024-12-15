@@ -6,8 +6,6 @@ internal class Day06 : DayBase<Day06, Day06.Data>
 {
     internal record Data(long Width, long Height, (long X, long Y) Start, ImmutableHashSet<(long X, long Y)> Obstacles);
     public override int Number => 6;
-    
-    private enum FourDirections { North, East, South, West }
 
     protected override Data ParseInput()
     {
@@ -49,16 +47,7 @@ internal class Day06 : DayBase<Day06, Day06.Data>
             FourDirections.West => FourDirections.North,
             _ => throw new ArgumentOutOfRangeException(nameof(currentDirection), currentDirection, null)
         };
-
-    private static (long X, long Y) MakeAStep((long X, long Y) currentPosition, FourDirections currentDirection) =>
-        currentDirection switch
-        {
-            FourDirections.North => (currentPosition.X, currentPosition.Y - 1),
-            FourDirections.East => (currentPosition.X + 1, currentPosition.Y),
-            FourDirections.South => (currentPosition.X, currentPosition.Y + 1),
-            FourDirections.West => (currentPosition.X - 1, currentPosition.Y),
-            _ => throw new ArgumentOutOfRangeException(nameof(currentDirection), currentDirection, null)
-        };
+    
     
     public override string FirstPart()
     {
@@ -68,11 +57,11 @@ internal class Day06 : DayBase<Day06, Day06.Data>
         var reachedPositions = new HashSet<(long X, long Y)> { currentPosition };
         while (true)
         {
-            var maybeStep = MakeAStep(currentPosition, currentDirection);
+            var maybeStep = FourDirectionsUtils.MakeAStep(currentPosition, currentDirection);
             while (data.Obstacles.Contains(maybeStep))
             {
                 currentDirection = SwitchDirection(currentDirection);
-                maybeStep = MakeAStep(currentPosition, currentDirection);
+                maybeStep = FourDirectionsUtils.MakeAStep(currentPosition, currentDirection);
             }
             currentPosition = maybeStep;
             if (currentPosition.X < 0
@@ -110,11 +99,11 @@ internal class Day06 : DayBase<Day06, Day06.Data>
             };
             while (true)
             {
-                var maybeStep = MakeAStep(currentPosition, currentDirection);
+                var maybeStep = FourDirectionsUtils.MakeAStep(currentPosition, currentDirection);
                 while (obstacles.Contains(maybeStep))
                 {
                     currentDirection = SwitchDirection(currentDirection);
-                    maybeStep = MakeAStep(currentPosition, currentDirection);
+                    maybeStep = FourDirectionsUtils.MakeAStep(currentPosition, currentDirection);
                 }
                 currentPosition = maybeStep;
                 if (reachedPositions.Contains((currentPosition, currentDirection)))
