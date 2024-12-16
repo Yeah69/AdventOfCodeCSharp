@@ -51,4 +51,24 @@ internal static class FourDirectionsUtils
             FourDirections.West => (currentPosition.X - stepCount, currentPosition.Y),
             _ => throw new ArgumentOutOfRangeException(nameof(currentDirection), currentDirection, null)
         };
+    
+    internal static FourDirections RotateCounterClockwise(this FourDirections currentDirection) =>
+        currentDirection switch
+        {
+            FourDirections.North => FourDirections.West,
+            FourDirections.West => FourDirections.South,
+            FourDirections.South => FourDirections.East,
+            FourDirections.East => FourDirections.North,
+            _ => throw new ArgumentOutOfRangeException(nameof(currentDirection), currentDirection, null)
+        };
+    
+    internal static FourDirections RotateClockwise(this FourDirections currentDirection) =>
+        currentDirection switch
+        {
+            FourDirections.North => FourDirections.East,
+            FourDirections.East => FourDirections.South,
+            FourDirections.South => FourDirections.West,
+            FourDirections.West => FourDirections.North,
+            _ => throw new ArgumentOutOfRangeException(nameof(currentDirection), currentDirection, null)
+        };
 }
