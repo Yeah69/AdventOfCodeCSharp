@@ -4,7 +4,12 @@ namespace AdventOfCode.Days;
 
 internal class Day18 : DayBase<Day18, Day18.Data>
 {
-    internal record Data(IReadOnlyList<(long X, long Y)> Bytes);
+    internal record Data(
+        IReadOnlyList<(long X, long Y)> Bytes, 
+        long Width, 
+        long Height, 
+        ImmutableHashSet<(long X, long Y)> Walls,
+        long InitiallyFallenBytes);
     public override int Number => 18;
 
     protected override Data ParseInput()
@@ -26,7 +31,16 @@ internal class Day18 : DayBase<Day18, Day18.Data>
             bytes.Add((x, y));
         }
         
-        return new Data(bytes);
+        var width = SampleNumber > 0 ? 7L : 71L;
+        var height = SampleNumber > 0 ? 7L : 71L;
+        var fallenBytes = SampleNumber > 0 ? 12 : 1024;
+        
+        var walls = bytes.Take(fallenBytes)
+            .Concat(Enumerable.Range(-1, (int) width + 2).SelectMany(x => new[] {(X: (long) x, Y: -1L), (X: x, Y: height)}))
+            .Concat(Enumerable.Range(0, (int) height).SelectMany(y => new[] {(-1L, (long) y), (width, y)}))
+            .ToImmutableHashSet();
+        
+        return new Data(bytes, width, height, walls, fallenBytes);
     }
 
     private static string Solve(long width, long height, ImmutableHashSet<(long, long)> walls)
@@ -55,42 +69,31 @@ internal class Day18 : DayBase<Day18, Day18.Data>
         return Consts.NoSolutionFound;
     }
 
-    public override string FirstPart()
-    {
-        var data = ParsedInput.Value;
-        var width = SampleNumber > 0 ? 7L : 71L;
-        var height = SampleNumber > 0 ? 7L : 71L;
-        var fallenBytes = SampleNumber > 0 ? 12 : 1024;
-        
-        var walls = data.Bytes.Take(fallenBytes)
-            .Concat(Enumerable.Range(-1, (int) width + 2).SelectMany(x => new[] {(X: (long) x, Y: -1L), (X: x, Y: height)}))
-            .Concat(Enumerable.Range(0, (int) height).SelectMany(y => new[] {(-1L, (long) y), (width, y)}))
-            .ToImmutableHashSet();
-        
-        return Solve(width, height, walls);
-    }
+    public override string FirstPart() => Solve(ParsedInput.Value.Width, ParsedInput.Value.Height, ParsedInput.Value.Walls);
 
     public override string SecondPart()
     {
-        var data = ParsedInput.Value;
-        var width = SampleNumber > 0 ? 7L : 71L;
-        var height = SampleNumber > 0 ? 7L : 71L;
-        var fallenBytes = SampleNumber > 0 ? 12 : 1024;
+        var width = ParsedInput.Value.Width;
+        var height = ParsedInput.Value.Height;
+        var fallenBytes = ParsedInput.Value.InitiallyFallenBytes;
         
-        var walls = data.Bytes.Take(fallenBytes)
+        var walls = ParsedInput.Value.Bytes.Take((int) fallenBytes)
             .Concat(Enumerable.Range(-1, (int) width + 2).SelectMany(x => new[] {(X: (long) x, Y: -1L), (X: x, Y: height)}))
             .Concat(Enumerable.Range(0, (int) height).SelectMany(y => new[] {(-1L, (long) y), (width, y)}))
             .ToImmutableHashSet();
         
-        for (var i = fallenBytes; i < data.Bytes.Count; i++)
-        {
-            var currentByte = data.Bytes[i];
-            walls = walls.Add(currentByte);
-            var result = Solve(width, height, walls);
-            if (result == Consts.NoSolutionFound)
-                return $"{currentByte.X},{currentByte.Y}";
-        }
-        
-        return Consts.NoSolutionFound;
+        var threshold = BinarySearchUtils.ThresholdSearch(
+            (int) ParsedInput.Value.InitiallyFallenBytes + 1, 
+            ParsedInput.Value.Bytes.Count - 1, 
+            i =>
+            {
+                var addition = ImmutableHashSet.CreateRange(
+                    Enumerable.Range(
+                        (int) ParsedInput.Value.InitiallyFallenBytes + 1, 
+                        i - (int) ParsedInput.Value.InitiallyFallenBytes).Select(j => ParsedInput.Value.Bytes[j]));
+                return Solve(width, height, walls.Union(addition)) != Consts.NoSolutionFound;
+            });
+        var invalidatingByte = ParsedInput.Value.Bytes[threshold];
+        return $"{invalidatingByte.X},{invalidatingByte.Y}";
     }
 }
