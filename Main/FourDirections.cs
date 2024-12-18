@@ -12,6 +12,14 @@ internal static class FourDirectionsUtils
         yield return (currentPosition.X, currentPosition.Y + 1);
     }
     
+    internal static IEnumerable<(long X, long Y)> GetNeighbors((long X, long Y) currentPosition)
+    {
+        yield return (currentPosition.X - 1, currentPosition.Y);
+        yield return (currentPosition.X + 1, currentPosition.Y);
+        yield return (currentPosition.X, currentPosition.Y - 1);
+        yield return (currentPosition.X, currentPosition.Y + 1);
+    }
+    
     internal static (long X, long Y) MakeAStep((long X, long Y) currentPosition, FourDirections currentDirection) =>
         currentDirection switch
         {
