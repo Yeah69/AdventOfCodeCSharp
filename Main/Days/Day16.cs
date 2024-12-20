@@ -10,7 +10,6 @@ internal class Day16 : DayBase<Day16, Day16.Data>
 
     protected override Data ParseInput()
     {
-        
         var inputSpan = Input.AsSpan();
         var lineRanges = inputSpan.Split(Environment.NewLine);
         var walls = new List<(int X, int Y)>();
