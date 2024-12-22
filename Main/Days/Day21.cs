@@ -19,56 +19,15 @@ internal class Day21 : DayBase<Day21, Day21.Data>
         
         return new(codes);
     }
-
-    public override string FirstPart()
+    
+    private static IEnumerable<string> Possibilities(string code, char prevButton, Func<char, (int X, int Y)> mapToCoordinates, (int X, int Y) gapPosition)
     {
-        var data = ParsedInput.Value;
-
-        var sum = 0L;
-        
-        foreach (var code in data.Codes)
-        {
-            Console.WriteLine(code);
-
-            var list = NumPadPossibilities(code, 'A')
-                /*.Select(s =>
-                {
-                    return s.Split('A').SkipLast(1).Select(p => p + 'A')
-                        .Sum(p =>
-                        {
-                            var currentPart = p;
-                            for (var i = 0; i < 2; ++i)
-                            {
-                                currentPart = DirPadPossibilities(currentPart, 'A').First();
-                            }
-                            return (long) currentPart.Length;
-                        });
-                })
-                .First();*/
-                .SelectMany(s => DirPadPossibilities(s, 'A'))
-                .SelectMany(s => DirPadPossibilities(s, 'A'))
-                .GroupBy(s => s.Length)
-                .ToList();
-            
-            var allString = string.Join(Environment.NewLine, list.SelectMany(g => g));
-            
-            var minSequenceLength = list.Min(s => s.Key);//*/
-            var numberPart = long.Parse(code[..^1]);
-            sum += minSequenceLength * numberPart;
-        }
-        
-        return sum.ToString();
-    }
-
-    private static IEnumerable<string> NumPadPossibilities(string code, char prevButton)
-    {
-        var gapPosition = (X: 0, Y: 3);
         if (code.Length == 0)
             return [""];
-        var prevButtonCoordinates = MapToNumPadCoordinates(prevButton);
+        var prevButtonCoordinates = mapToCoordinates(prevButton);
         foreach (var button in code)
         {
-            var buttonCoordinates = MapToNumPadCoordinates(button);
+            var buttonCoordinates = mapToCoordinates(button);
             var xDiff = buttonCoordinates.X - prevButtonCoordinates.X;
             var yDiff = buttonCoordinates.Y - prevButtonCoordinates.Y;
             var xPart = "".PadRight(Math.Abs(xDiff), xDiff > 0 ? '>' : '<');
@@ -83,35 +42,7 @@ internal class Day21 : DayBase<Day21, Day21.Data>
                 _ => new[] { xPart + yPart + 'A', yPart + xPart + 'A' }
 
             };
-            return NumPadPossibilities(code[1..], button).SelectMany(s => prefixes.Select(prefix => prefix + s));
-        }
-        return Array.Empty<string>();
-    }
-
-    private static IEnumerable<string> DirPadPossibilities(string code, char prevButton)
-    {
-        var gapPosition = (X: 0, Y: 0);
-        if (code.Length == 0)
-            return [""];
-        var prevButtonCoordinates = MapToDirPadCoordinates(prevButton);
-        foreach (var button in code)
-        {
-            var buttonCoordinates = MapToDirPadCoordinates(button);
-            var xDiff = buttonCoordinates.X - prevButtonCoordinates.X;
-            var yDiff = buttonCoordinates.Y - prevButtonCoordinates.Y;
-            var xPart = "".PadRight(Math.Abs(xDiff), xDiff > 0 ? '>' : '<');
-            var yPart = "".PadRight(Math.Abs(yDiff), yDiff > 0 ? 'v' : '^');
-            var prefixes = (xDiff, yDiff) switch
-            {
-                (0, 0) => new[] { "A" },
-                (0, _) => new[] { yPart + 'A' },
-                (_, 0) => new[] { xPart + 'A' },
-                _ when buttonCoordinates.Y == gapPosition.Y && prevButtonCoordinates.X == gapPosition.X => new[] { xPart + yPart + 'A' }, 
-                _ when buttonCoordinates.X == gapPosition.X && prevButtonCoordinates.Y == gapPosition.Y => new[] { yPart + xPart + 'A' },
-                _ => new[] { xPart + yPart + 'A', yPart + xPart + 'A' }
-
-            };
-            return DirPadPossibilities(code[1..], button).SelectMany(s => prefixes.Select(prefix => prefix + s));
+            return Possibilities(code[1..], button, mapToCoordinates, gapPosition).SelectMany(s => prefixes.Select(prefix => prefix + s));
         }
         return Array.Empty<string>();
     }
@@ -141,31 +72,55 @@ internal class Day21 : DayBase<Day21, Day21.Data>
         'A' => (2, 0),
         _ => throw new ArgumentOutOfRangeException(nameof(button), button, "Invalid button")
     };
-    
-    /*
-+---+---+---+
-| 7 | 8 | 9 |
-+---+---+---+
-| 4 | 5 | 6 |
-+---+---+---+
-| 1 | 2 | 3 |
-+---+---+---+
-    | 0 | A |
-    +---+---+
-    
-    +---+---+
-    | ^ | A |
-+---+---+---+
-| < | v | > |
-+---+---+---+
-     */
 
-    public override string SecondPart()
+    private static readonly (int X, int Y) DirPadGap = (0, 0);
+    private static readonly (int X, int Y) NumPadGap = (0, 3);
+    private static readonly char[] AllDirButtons = ['^', 'v', '<', '>', 'A'];
+    private string Solve(int dirSteps)
     {
         var data = ParsedInput.Value;
 
         var sum = 0L;
         
+        var dirMap = AllDirButtons.SelectMany(b1 => AllDirButtons.Select(b2 => (b1, b2)))
+            .ToDictionary(t => t, t =>
+            {
+                var prevButton = t.b1;
+                var code = t.b2.ToString();
+                return Possibilities(code, prevButton, MapToDirPadCoordinates, DirPadGap)
+                    .Select(s => (long) s.Length)
+                    .Min();
+            });
+
+        for (var i = 0; i < dirSteps - 1; i++)
+        {
+            dirMap = AllDirButtons.SelectMany(b1 => AllDirButtons.Select(b2 => (b1, b2)))
+                .ToDictionary(t => t, t =>
+                {
+                    var prevButton = t.b1;
+                    var code = t.b2.ToString();
+                    return Possibilities(code, prevButton, MapToDirPadCoordinates, DirPadGap)
+                        .Select(s => s.Prepend('A')
+                            .Zip(s, (prev, current) => dirMap[(prev, current)])
+                            .Sum())
+                        .Min();
+                });
+        }
+        
+        foreach (var code in data.Codes)
+        {
+            var minSequenceLength = Possibilities(code, 'A', MapToNumPadCoordinates, NumPadGap)
+                .Select(s => s.Prepend('A').Zip(s, (prev, current) => dirMap[(prev, current)]).Sum())
+                .Min();
+
+            var numberPart = long.Parse(code[..^1]);
+            sum += minSequenceLength * numberPart;
+        }
+        
         return sum.ToString();
     }
+
+    public override string FirstPart() => Solve(2);
+
+    public override string SecondPart() => Solve(25);
 }
