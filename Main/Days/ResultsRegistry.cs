@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using MrMeeseeks.DIE.UserUtility;
 
 namespace AdventOfCode.Days;
@@ -26,20 +27,27 @@ internal class ResultsRegistry : IResultsRegistry, IResultsPrinter, IScopeInstan
         Console.WriteLine("Results Summary:");
         foreach (var (resultStatus, tasks) in _results.OrderBy(x => x.Key))
         {
-            ConsoleHelper.WriteColored(resultStatus.ToChar().ToString(), resultStatus.ToConsoleColor());
-            Console.Write(" ");
+            ConsoleHelper.WriteLineColored(resultStatus.ToChar().ToString(), resultStatus.ToConsoleColor());
             if (tasks.Count == 0)
                 Console.WriteLine("None");
             else
             {
-                var first = tasks.First();
-                first.Day.PrintShortDayLabel(first.Stage);
-                foreach (var (day, stage) in tasks.Skip(1))
+                var labelSize = tasks.Select(x => x.Day.GetShortDayLabelText(Stage.SecondPart).Length).Max();
+                var chunkSize = Console.WindowWidth / (labelSize + 2/* Comma & space */);
+                var chunks = new Queue<(IDay Day, Stage Stage)[]>(tasks.Chunk(chunkSize));
+                while (chunks.Count > 0)
                 {
-                    Console.Write(", ");
-                    day.PrintShortDayLabel(stage);
+                    var chunk = chunks.Dequeue();
+                    foreach (var (day, stage) in chunk)
+                    {
+                        var padLeftSize = labelSize - day.GetShortDayLabelText(stage).Length;
+                        day.PrintShortDayLabel(stage);
+                        Console.Write("".PadLeft(padLeftSize, ' '));
+                        if (chunks.Count > 0 || chunk.Last().Day != day)
+                            Console.Write(", ");
+                    }
+                    Console.WriteLine();
                 }
-                Console.WriteLine();
             }
         }
         Console.WriteLine();

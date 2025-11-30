@@ -24,14 +24,19 @@ internal class TimesRegistry : ITimesRegistry, ITimesPrinter, IScopeInstance
         if (_results.Count > 0)
         {
             var lineDescriptionGroups = GetLineDescriptions(_results);
-            foreach (var lineDescriptionGroup in lineDescriptionGroups)
+            
+            while (lineDescriptionGroups.Count > 0)
             {
+                var lineDescriptionGroup = lineDescriptionGroups.Pop();
                 foreach (var lineDescription in lineDescriptionGroup)
                 {
                     PrintLine(lineDescription);
                 }
-                Console.WriteLine();
-                Console.WriteLine();
+
+                if (lineDescriptionGroups.Count > 0)
+                {
+                    Console.WriteLine("<<<");
+                }
             }
         }
         else
@@ -40,7 +45,7 @@ internal class TimesRegistry : ITimesRegistry, ITimesPrinter, IScopeInstance
         Console.WriteLine();
         return;
 
-        ImmutableArray<ImmutableArray<LineDescription>> GetLineDescriptions(IReadOnlyList<(IDay Day, Stage Stage, TimeSpan Duration)> results)
+        Stack<ImmutableArray<LineDescription>> GetLineDescriptions(IReadOnlyList<(IDay Day, Stage Stage, TimeSpan Duration)> results)
         {
             Stack<ImmutableArray<LineDescription>> lineGroups = [];
             var currentResults = results;
@@ -78,7 +83,7 @@ internal class TimesRegistry : ITimesRegistry, ITimesPrinter, IScopeInstance
                     currentResults = [];
             }
 
-            return [.. lineGroups];
+            return lineGroups;
         }
 
         void PrintLine(LineDescription lineDescription)
