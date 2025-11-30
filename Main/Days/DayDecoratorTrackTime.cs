@@ -48,6 +48,7 @@ internal class DayDecoratorTrackTime : IDay, IDecorator<IDay>
     public void PrintLongDayLabel(Stage? stage = null) => _inner.PrintLongDayLabel(stage);
     public void PrintShortDayLabel(Stage stage) => _inner.PrintShortDayLabel(stage);
     public string GetShortDayLabelText(Stage stage) => _inner.GetShortDayLabelText(stage);
+    public void OverrideInput(string newInput) => _inner.OverrideInput(newInput);
 
     private void PrintTracking(Stage stage, TimeSpan time)
     {

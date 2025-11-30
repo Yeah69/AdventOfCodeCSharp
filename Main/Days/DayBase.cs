@@ -12,7 +12,8 @@ internal abstract class DayOfYear2025<TDay, TData> : DayBase<TDay, TData>, IDay 
 
 internal abstract class DayBase<TDay, TData> : IDay where TDay : class, IDay
 {
-    private protected readonly Lazy<TData> ParsedInput;
+    private protected Lazy<TData> ParsedInput;
+    private string? _inputOverride;
     
     protected DayBase() => ParsedInput = new Lazy<TData>(ParseInput);
     
@@ -24,6 +25,8 @@ internal abstract class DayBase<TDay, TData> : IDay where TDay : class, IDay
     {
         get
         {
+            if (_inputOverride is not null)
+                return _inputOverride;
             var yearText = Year.ToString();
             var numberText = Number.TwoDigits();
             var sampleNumberText = SampleNumber is 0 or null
@@ -85,5 +88,11 @@ internal abstract class DayBase<TDay, TData> : IDay where TDay : class, IDay
     {
         var samplePart = SampleNumber is > 0 ? $".{SampleNumber?.TwoDigits() ?? ""}" : "";
         return $"{Year.ToString()}.{Number.TwoDigits()}{samplePart}{stage.ToShortLabel()}";
+    }
+
+    public void OverrideInput(string newInput)
+    {
+        _inputOverride = newInput;
+        ParsedInput = new Lazy<TData>(ParseInput);
     }
 }

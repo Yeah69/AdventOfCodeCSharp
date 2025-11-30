@@ -16,4 +16,5 @@ internal interface IDay
     void PrintLongDayLabel(Stage? stage = null);
     void PrintShortDayLabel(Stage stage);
     string GetShortDayLabelText(Stage stage);
+    void OverrideInput(string newInput);
 }

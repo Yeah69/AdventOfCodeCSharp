@@ -13,26 +13,26 @@
     </Design.DataContext>
     
     <DockPanel>
-        <ComboBox
+        <Grid
             DockPanel.Dock="Top"
-            ItemsSource="{Binding Days.Days}" 
-            SelectedItem="{Binding Days.SelectedDay}">
-            <ComboBox.DataTemplates>
-                <DataTemplate DataType="{x:Type viewModels:DayViewModel}">
-                    <TextBlock>
-                        <Run Text="Year: " />
-                        <Run Text="{Binding Year}" />
-                        <Run Text="Day: " />
-                        <Run Text="{Binding Number}" />
-                        <Run Text=" Sample: " />
-                        <Run Text="{Binding SampleNumber}" />
-                    </TextBlock>
-                </DataTemplate>
-            </ComboBox.DataTemplates>
-        </ComboBox>
+            ColumnDefinitions="*,*,*">
+            <ComboBox 
+                Grid.Column="0" 
+                ItemsSource="{Binding Days.Years}"
+                SelectedItem="{Binding Days.SelectedYear}" />
+            <ComboBox
+                Grid.Column="1"
+                ItemsSource="{Binding Days.Days}"
+                SelectedItem="{Binding Days.SelectedDay}" />
+            <ComboBox 
+                Grid.Column="2" 
+                ItemsSource="{Binding Days.Samples}"
+                SelectedItem="{Binding Days.SelectedDayInstance}"
+                DisplayMemberBinding="{Binding SampleNumber}" />
+        </Grid>
         <ContentControl
             DockPanel.Dock="Bottom"
-            Content="{Binding Days.SelectedDay}">
+            Content="{Binding Days.SelectedDayInstance}">
             <ContentControl.DataTemplates>
                 <DataTemplate DataType="viewModels:DayViewModel">
                    <DockPanel VerticalAlignment="Stretch">
@@ -42,12 +42,10 @@
                            <TextBox Grid.Column="0" Grid.Row="1" Text="{Binding SecondPart.Solution}" IsVisible="{Binding SecondPart.Solved}" />
                            <Button Grid.Column="1" Grid.Row="1" Content="Solve Second Part" Command="{Binding SecondPart.SolvePart}" />
                        </Grid>
-                       <TextBox DockPanel.Dock="Top" Text="{Binding Input}" IsReadOnly="True" />
+                       <TextBox DockPanel.Dock="Top" Text="{Binding Input}" />
                    </DockPanel>
                 </DataTemplate>
             </ContentControl.DataTemplates>
-            
         </ContentControl>
     </DockPanel>
-
 </Window>
