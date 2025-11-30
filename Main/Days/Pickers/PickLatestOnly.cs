@@ -2,7 +2,7 @@
 
 internal class PickLatestOnly : IDayPicker
 {
-    public IEnumerable<IDay> PickDay(IReadOnlyList<IDay> days)
+    public IEnumerable<IDay> PickDays(IReadOnlyList<IDay> days)
     {
         if (days.Where(d => !string.IsNullOrEmpty(d.Input))
                 .OrderByDescending(d => d.Number)

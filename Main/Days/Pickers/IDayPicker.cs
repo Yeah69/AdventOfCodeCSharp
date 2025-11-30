@@ -2,5 +2,5 @@
 
 internal interface IDayPicker
 {
-    IEnumerable<IDay> PickDay(IReadOnlyList<IDay> days);
+    IEnumerable<IDay> PickDays(IReadOnlyList<IDay> days);
 }

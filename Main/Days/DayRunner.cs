@@ -31,7 +31,7 @@ internal class DayRunner : IDayRunner, IScopeRoot
     public void Run()
     {
         var start = Stopwatch.GetTimestamp();
-        foreach (var day in _picker.PickDay(_days))
+        foreach (var day in _picker.PickDays(_days))
         {
             PrintInput(day);
             day.PrepareInputParsing();

@@ -1,12 +1,5 @@
-﻿using System.Runtime.CompilerServices;
-using MrMeeseeks.DIE.Configuration.Attributes;
+﻿using MrMeeseeks.DIE.Configuration.Attributes;
 using MrMeeseeks.DIE.UserUtility;
-
-[assembly:InternalsVisibleTo("AdventOfCodeCSharp.UnitTests")]
-
-[assembly:InternalsVisibleTo("AdventOfCodeCSharp.View")]
-
-// DI Mappings
 
 [assembly:ContainerInstanceAbstractionAggregation(typeof(IContainerInstance))]
 [assembly:TransientScopeInstanceAbstractionAggregation(typeof(ITransientScopeInstance))]
