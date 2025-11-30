@@ -13,6 +13,7 @@ internal class DayDecoratorPrintSolution : IDay, IDecorator<IDay>
         _resultsRegistry = resultsRegistry;
     }
 
+    public int Year => _inner.Year;
     public int Number => _inner.Number;
     public int? SampleNumber => _inner.SampleNumber;
     public string Input => _inner.Input;
@@ -40,7 +41,7 @@ internal class DayDecoratorPrintSolution : IDay, IDecorator<IDay>
     private void PrintSolution(string solution, Stage stage)
     {
         var samplePart = SampleNumber is > 0 ? $".{(SampleNumber ?? 0).TwoDigits()}" : string.Empty;
-        var taskLabel = $"{Number.TwoDigits()}{samplePart}{stage.ToShortLabel()}";
+        var taskLabel = $"{Year.ToString()}.{Number.TwoDigits()}{samplePart}{stage.ToShortLabel()}";
         var knownSolution = Solutions.ResourceManager.GetString(taskLabel);
         var result = knownSolution is null 
             ? ResultStatus.Uncertain

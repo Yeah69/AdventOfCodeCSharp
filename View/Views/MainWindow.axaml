@@ -20,6 +20,8 @@
             <ComboBox.DataTemplates>
                 <DataTemplate DataType="{x:Type viewModels:DayViewModel}">
                     <TextBlock>
+                        <Run Text="Year: " />
+                        <Run Text="{Binding Year}" />
                         <Run Text="Day: " />
                         <Run Text="{Binding Number}" />
                         <Run Text=" Sample: " />

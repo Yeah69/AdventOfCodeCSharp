@@ -1,8 +1,8 @@
 ﻿using System.Collections.Immutable;
 
-namespace AdventOfCode.Days;
+namespace AdventOfCode.Days.Year2024;
 
-internal class Day18 : DayBase<Day18, Day18.Data>
+internal class Day18 : DayOfYear2024<Day18, Day18.Data>
 {
     internal record Data(
         IReadOnlyList<(long X, long Y)> Bytes, 

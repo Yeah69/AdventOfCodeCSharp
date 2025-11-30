@@ -1,9 +1,9 @@
 ﻿using System.Collections.Frozen;
 using System.Collections.Immutable;
 
-namespace AdventOfCode.Days;
+namespace AdventOfCode.Days.Year2024;
 
-internal class Day20 : DayBase<Day20, Day20.Data>
+internal class Day20 : DayOfYear2024<Day20, Day20.Data>
 {
     internal record Data(ImmutableArray<(int X, int Y)> Path, FrozenDictionary<(int X, int Y), int> BestTimes);
     public override int Number => 20;

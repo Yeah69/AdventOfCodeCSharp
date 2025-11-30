@@ -1,6 +1,6 @@
-﻿namespace AdventOfCode.Days;
+﻿namespace AdventOfCode.Days.Year2024;
 
-internal class Day13 : DayBase<Day13, Day13.Data>
+internal class Day13 : DayOfYear2024<Day13, Day13.Data>
 {
     internal record ClawMachine((long X, long Y) A, (long X, long Y) B, (long X, long Y) Prize);
     internal record Data(IReadOnlyList<ClawMachine> ClawMachines);

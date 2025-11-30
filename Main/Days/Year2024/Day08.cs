@@ -1,8 +1,8 @@
 ﻿using AdventOfCode.Extensions;
 
-namespace AdventOfCode.Days;
+namespace AdventOfCode.Days.Year2024;
 
-internal class Day08 : DayBase<Day08, Day08.Data>
+internal class Day08 : DayOfYear2024<Day08, Day08.Data>
 {
     internal record Data(long Height, long Width, IReadOnlyDictionary<char, IReadOnlyList<(long X, long Y)>> AntennaMap);
     

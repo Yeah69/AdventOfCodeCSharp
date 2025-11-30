@@ -9,6 +9,7 @@ internal sealed class DayViewModel(
     Func<IDay, SecondPartViewModel> secondPartFactory) 
     : ViewModelBase
 {
+    internal int Year => day.Year;
     internal int Number => day.Number;
     internal int? SampleNumber => day.SampleNumber;
     internal string Input => day.Input;

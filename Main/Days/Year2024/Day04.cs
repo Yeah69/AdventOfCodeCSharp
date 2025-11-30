@@ -1,6 +1,6 @@
-﻿namespace AdventOfCode.Days;
+﻿namespace AdventOfCode.Days.Year2024;
 
-internal class Day04 : DayBase<Day04, string>
+internal class Day04 : DayOfYear2024<Day04, string>
 {
     public override int Number => 4;
     private readonly EightDirections[] _directions =

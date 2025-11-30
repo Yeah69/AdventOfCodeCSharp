@@ -1,8 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace AdventOfCode.Days;
+namespace AdventOfCode.Days.Year2024;
 
-internal class Day07 : DayBase<Day07, IReadOnlyList<Day07.Equation>>
+internal class Day07 : DayOfYear2024<Day07, IReadOnlyList<Day07.Equation>>
 {
     internal record Equation(long Value, List<long> Components);
     public override int Number => 7;

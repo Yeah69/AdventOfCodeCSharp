@@ -1,6 +1,6 @@
-﻿namespace AdventOfCode.Days;
+﻿namespace AdventOfCode.Days.Year2024;
 
-internal class Day17 : DayBase<Day17, Day17.Data>
+internal class Day17 : DayOfYear2024<Day17, Day17.Data>
 {
     internal record Data(long A, long B, long C, IReadOnlyList<long> Program);
 

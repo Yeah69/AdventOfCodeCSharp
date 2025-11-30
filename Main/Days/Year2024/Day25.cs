@@ -1,6 +1,6 @@
-﻿namespace AdventOfCode.Days;
+﻿namespace AdventOfCode.Days.Year2024;
 
-internal class Day25 : DayBase<Day25, Day25.Data>
+internal class Day25 : DayOfYear2024<Day25, Day25.Data>
 {
     internal record Data(IReadOnlyList<IReadOnlyList<int>> Locks, IReadOnlyList<IReadOnlyList<int>> Keys, int Height);
     public override int Number => 25;

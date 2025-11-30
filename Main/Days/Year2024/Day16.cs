@@ -1,8 +1,8 @@
 ﻿using System.Collections.Frozen;
 
-namespace AdventOfCode.Days;
+namespace AdventOfCode.Days.Year2024;
 
-internal class Day16 : DayBase<Day16, Day16.Data>
+internal class Day16 : DayOfYear2024<Day16, Day16.Data>
 {
     internal record Step((int X, int Y) Position, FourDirections Direction, long Score, Step? PreviousStep);
     internal record Data(FrozenSet<(int X, int Y)> Walls, (int X, int Y) Start, (int X, int Y) End);

@@ -1,6 +1,6 @@
-﻿namespace AdventOfCode.Days;
+﻿namespace AdventOfCode.Days.Year2024;
 
-internal class Day24 : DayBase<Day24, Day24.Data>
+internal class Day24 : DayOfYear2024<Day24, Day24.Data>
 {
     internal interface INode
     {

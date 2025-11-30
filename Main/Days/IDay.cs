@@ -2,6 +2,7 @@
 
 internal interface IDay
 {
+    int Year { get; }
     int Number { get; }
     
     int? SampleNumber { get; }

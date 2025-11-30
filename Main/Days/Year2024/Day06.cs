@@ -1,8 +1,8 @@
 ﻿using System.Collections.Immutable;
 
-namespace AdventOfCode.Days;
+namespace AdventOfCode.Days.Year2024;
 
-internal class Day06 : DayBase<Day06, Day06.Data>
+internal class Day06 : DayOfYear2024<Day06, Day06.Data>
 {
     internal record Data(long Width, long Height, (long X, long Y) Start, ImmutableHashSet<(long X, long Y)> Obstacles);
     public override int Number => 6;

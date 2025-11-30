@@ -1,6 +1,6 @@
-﻿namespace AdventOfCode.Days;
+﻿namespace AdventOfCode.Days.Year2024;
 
-internal class Day01 : DayBase<Day01, (List<long> Left, List<long> Right)>
+internal class Day01 : DayOfYear2024<Day01, (List<long> Left, List<long> Right)>
 {
     public override int Number => 1;
 

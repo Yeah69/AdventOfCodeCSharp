@@ -14,6 +14,7 @@ internal class DayDecoratorTrackTime : IDay, IDecorator<IDay>
         _timesRegistry = timesRegistry;
     }
     
+    public int Year => _inner.Year;
     public int Number => _inner.Number;
     public int? SampleNumber => _inner.SampleNumber;
     public string Input => _inner.Input;

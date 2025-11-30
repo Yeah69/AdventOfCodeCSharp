@@ -1,10 +1,22 @@
 ﻿namespace AdventOfCode.Days;
 
+internal abstract class DayOfYear2024<TDay, TData> : DayBase<TDay, TData>, IDay where TDay : class, IDay
+{
+    public override int Year => 2024;
+}
+
+internal abstract class DayOfYear2025<TDay, TData> : DayBase<TDay, TData>, IDay where TDay : class, IDay
+{
+    public override int Year => 2025;
+}
+
 internal abstract class DayBase<TDay, TData> : IDay where TDay : class, IDay
 {
     private protected readonly Lazy<TData> ParsedInput;
     
     protected DayBase() => ParsedInput = new Lazy<TData>(ParseInput);
+    
+    public abstract int Year { get; }
 
     public abstract int Number { get; }
 
@@ -12,11 +24,12 @@ internal abstract class DayBase<TDay, TData> : IDay where TDay : class, IDay
     {
         get
         {
+            var yearText = Year.ToString();
             var numberText = Number.TwoDigits();
             var sampleNumberText = SampleNumber is 0 or null
                 ? string.Empty
                 : $".{SampleNumber.Value.TwoDigits()}";
-            return Inputs.ResourceManager.GetString($"{numberText}{sampleNumberText}") ?? string.Empty;
+            return Inputs.ResourceManager.GetString($"{yearText}.{numberText}{sampleNumberText}") ?? string.Empty;
         }
     }
 
@@ -35,7 +48,7 @@ internal abstract class DayBase<TDay, TData> : IDay where TDay : class, IDay
     public IEnumerable<IDay> Samples()
     {
         var i = 0;
-        while (Inputs.ResourceManager.GetString($"{Number.TwoDigits()}.{(i + 1).TwoDigits()}") is not null)
+        while (Inputs.ResourceManager.GetString($"{Year.ToString()}.{Number.TwoDigits()}.{(i + 1).TwoDigits()}") is not null)
         {
             yield return PrintSolutionWrappingFactory(TrackTimeWrappingFactory(SampleFactory(++i)));
         }
@@ -43,7 +56,7 @@ internal abstract class DayBase<TDay, TData> : IDay where TDay : class, IDay
 
     public void PrintLongDayLabel(Stage? stage)
     {
-        ConsoleHelper.WriteColored($"Day {Number.TwoDigits()}", ConsoleColor.DarkBlue);
+        ConsoleHelper.WriteColored($"Day {Number.TwoDigits()} ({Year.ToString()})", ConsoleColor.DarkBlue);
         if (SampleNumber is > 0)
         {
             Console.Write(" ");
@@ -58,6 +71,7 @@ internal abstract class DayBase<TDay, TData> : IDay where TDay : class, IDay
 
     public void PrintShortDayLabel(Stage stage)
     {
+        Console.Write($"{Year.ToString()}.");
         ConsoleHelper.WriteColored(Number.TwoDigits(), ConsoleColor.DarkBlue);
         if (SampleNumber is > 0)
         {
@@ -70,6 +84,6 @@ internal abstract class DayBase<TDay, TData> : IDay where TDay : class, IDay
     public string GetShortDayLabelText(Stage stage)
     {
         var samplePart = SampleNumber is > 0 ? $".{SampleNumber?.TwoDigits() ?? ""}" : "";
-        return $"{Number.TwoDigits()}{samplePart}{stage.ToShortLabel()}";
+        return $"{Year.ToString()}.{Number.TwoDigits()}{samplePart}{stage.ToShortLabel()}";
     }
 }
