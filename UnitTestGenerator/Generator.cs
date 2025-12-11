@@ -30,20 +30,21 @@ public class Generator : IIncrementalGenerator
                 """);
             foreach (var (dayLabel, solution) in s)
             {
-                var dayNumber = int.Parse(dayLabel[..2]);
-                var sampleNumber = dayLabel[2] == '.' ? int.Parse(dayLabel[3..5]) : 0;
+                var yearNumber = int.Parse(dayLabel[..4]);
+                var dayNumber = int.Parse(dayLabel[5..7]);
+                var sampleNumber = dayLabel[7] == '.' ? int.Parse(dayLabel[8..10]) : 0;
                 var part = dayLabel.EndsWith("II") ? "Second" : "First";
                 var sampleTestName = sampleNumber > 0 ? $"_Sample{sampleNumber}" : "";
                 code.AppendLine(
                     $$"""
                           [global::Xunit.FactAttribute]
-                          public void Day{{dayNumber.ToString().PadLeft(2, '0')}}{{sampleTestName}}_{{part}}Part()
+                          public void Year{{yearNumber}}_Day{{dayNumber.ToString().PadLeft(2, '0')}}{{sampleTestName}}_{{part}}Part()
                           {
                               // Arrange
                               var container = global::AdventOfCode.Container.DIE_CreateContainer();
-                              var dayPicker = container.CreatePickSpecific()({{dayNumber}}, {{sampleNumber}});
+                              var dayPicker = container.CreatePickSpecific()({{yearNumber}}, {{dayNumber}}, {{sampleNumber}});
                               var days = container.CreateDays();
-                              var day = dayPicker.PickDay(days).Single();
+                              var day = dayPicker.PickDays(days).Single();
                               
                               const string expected = "{{solution}}";
                               
