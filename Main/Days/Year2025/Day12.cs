@@ -123,9 +123,43 @@ internal class Day12 : DayOfYear2025<Day12, (ImmutableArray<Day12.Present> Prese
             if (toFitPoints > availablePoints)
                 return false;
             
-            return Inner([], region.Quantities.Select((q, i) => (q, i)).Where(t => t.q > 0).ToImmutableDictionary(t => t.i, t => t.q));
+            var (isValid, map) = Inner([], region.Quantities.Select((q, i) => (q, i)).Where(t => t.q > 0).ToImmutableDictionary(t => t.i, t => t.q), 'A');
+            
+            if (isValid)
+                PrintMap();
 
-            bool Inner(ImmutableHashSet<(long X, long Y)> assignedPoints, ImmutableDictionary<int, long> quantities)
+            return isValid;
+
+            void PrintMap()
+            {
+                var minX = map.Keys.Min(ap => ap.X);
+                var maxX = map.Keys.Max(ap => ap.X);
+                var minY = map.Keys.Min(ap => ap.Y);
+                var maxY = map.Keys.Max(ap => ap.Y);
+
+                var colors = new Dictionary<char, ConsoleColor> { { '.', ConsoleColor.Gray } };
+                foreach (var label in map.Values)
+                {
+                    colors[label] = (ConsoleColor)((label - 'A') % 6 + 1);
+                }
+
+                for (var y = minY; y <= maxY; ++y)
+                {
+                    for (var x = minX; x <= maxX; ++x)
+                    {
+                        var character = map.GetValueOrDefault((x, y), '.');
+                        var temp = Console.ForegroundColor;
+                        Console.ForegroundColor = colors[character];
+                        Console.Write(character);
+                        Console.ForegroundColor = temp;
+                    }
+                    Console.WriteLine();
+                }
+                Console.WriteLine();
+                Console.WriteLine();
+            }
+
+            (bool IsValid, ImmutableDictionary<(long X, long Y), char>) Inner(ImmutableDictionary<(long X, long Y), char> assignedPoints, ImmutableDictionary<int, long> quantities, char label)
             {
                 if (assignedPoints.Count is 0)
                 {
@@ -133,19 +167,25 @@ internal class Day12 : DayOfYear2025<Day12, (ImmutableArray<Day12.Present> Prese
                     {
                         var newQuantities = quantities.Remove(id);
                         if (quantity > 1) newQuantities = newQuantities.Add(id, quantity - 1);
-                        var newAssignedPoints = assignedPoints.Union(presents[id].Configurations.First());
-                        if (Inner(newAssignedPoints, newQuantities))
-                            return true;
+                        var newAssignedPoints = assignedPoints
+                            .AddRange(presents[id].Configurations
+                                .First()
+                                .Select(c => new KeyValuePair<(long X, long Y), char>(c, label)));
+                        var innerResult = Inner(newAssignedPoints, newQuantities, (char) ((byte) label + 1));
+                        if (innerResult.IsValid)
+                            return innerResult;
                     }
                 }
 
                 if (quantities.Count is 0)
-                    return true;
+                    return (true, assignedPoints);
 
-                var minX = assignedPoints.Min(ap => ap.X);
-                var minY = assignedPoints.Min(ap => ap.Y);
-                var maxX = assignedPoints.Max(ap => ap.X);
-                var maxY = assignedPoints.Max(ap => ap.Y);
+                var minX = assignedPoints.Keys.Min(ap => ap.X);
+                var minY = assignedPoints.Keys.Min(ap => ap.Y);
+                var maxX = assignedPoints.Keys.Max(ap => ap.X);
+                var maxY = assignedPoints.Keys.Max(ap => ap.Y);
+
+                var priorityQueue = new PriorityQueue<(int Key, ImmutableHashSet<(long X, long Y)> Positions), long>();
 
                 for (var x = minX - 3L; x <= maxX + 1; ++x)
                 {
@@ -162,27 +202,38 @@ internal class Day12 : DayOfYear2025<Day12, (ImmutableArray<Day12.Present> Prese
                         if ((newWidth > region.Width || newLength > region.Length) &&
                             (newLength > region.Width || newWidth > region.Length))
                             continue;
+
+                        var priority = newWidth * newLength;
                         
                         foreach (var key in quantities.Keys)
                         {
                             foreach (var configuration in presents[key].Configurations)
                             {
                                 var positions = configuration.Select(c => (X: x + c.X, Y: y + c.Y)).ToImmutableHashSet();
-                                if (positions.Any(assignedPoints.Contains))
+                                if (positions.Any(assignedPoints.Keys.Contains))
                                     continue;
                                 
-                                var quantity = quantities[key];
-                                var newQuantities = quantities.Remove(key);
-                                if (quantity > 1) newQuantities = newQuantities.Add(key, quantity - 1);
-                                var newAssignedPoints = assignedPoints.Union(configuration);
-                                if (Inner(newAssignedPoints, newQuantities))
-                                    return true;
+                                priorityQueue.Enqueue((key, positions), priority);
                             }
                         }
                     }
                 }
 
-                return false;
+                while (priorityQueue.TryDequeue(out var tuple, out _))
+                {
+                    var (key, positions) = tuple;
+                    var quantity = quantities[key];
+                    var newQuantities = quantities.Remove(key);
+                    if (quantity > 1) newQuantities = newQuantities.Add(key, quantity - 1);
+                    var newAssignedPoints = assignedPoints
+                        .AddRange(positions
+                            .Select(c => new KeyValuePair<(long X, long Y), char>(c, label)));
+                    var innerResult = Inner(newAssignedPoints, newQuantities, label is 'Z' ? 'A' : (char) ((byte) label + 1));
+                    if (innerResult.IsValid)
+                        return innerResult;
+                }
+
+                return (false, []);
             }
         }
     }
