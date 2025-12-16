@@ -2,7 +2,7 @@
   <Folder Name="/Misc/">
     <File Path=".gitattributes" />
     <File Path=".gitignore" />
-    <File Path="Directory.build.props" />
+    <File Path="Directory.Build.props" />
   </Folder>
   <Project Path="Main\Main.csproj" Type="C#" />
   <Project Path="UnitTestGenerator\UnitTestGenerator.csproj" Type="C#" />
