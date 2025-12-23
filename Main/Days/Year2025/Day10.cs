@@ -121,48 +121,46 @@ internal class Day10 : DayOfYear2025<Day10, List<Day10.Machine>>
         {
             var (_, buttons, targetJoltages) = machine;
             
-            // We build a model with 3 constraints and 2 variables
-            const int Ncol = 2;
-            using var lp = LpSolve.make_lp(3, Ncol);
+            var columnCount = buttons.Length;
+            using var lp = LpSolve.make_lp(targetJoltages.Length, columnCount);
 
-// NOTE: set_obj_fnex/add_constraintex should be preferred on set_obj_fn/add_constraint
-//       as they can specify only non-zero elements when working with big model.
-//       The methods without _ex_ suffix will ignore the first array element so
-//       let's use a constant for this for clarity.
-            const double Ignored = 0;
+            const int ignored = 0;
 
-// set the objective function: maximize (143 x + 60 y)
-            lp.set_maxim();
-            lp.set_obj_fn([Ignored, 143, 60]);
+            lp.set_minim();
+            lp.set_obj_fn(Enumerable.Repeat(1, columnCount)
+                .Prepend(ignored)
+                .Select(x => (double)x)
+                .ToArray());
 
-// add constraints to the model
-//   120 x + 210 y <= 15000
-//   110 x +  30 y <= 4000
-//       x +     y <= 75
+            for (var i = 0; i < columnCount; ++i)
+            {
+                lp.is_int(i + 1);
+                lp.set_int(i + 1, true);
+            }
+            
             lp.set_add_rowmode(true);
-            lp.add_constraint([Ignored, 120, 210], lpsolve_constr_types.LE, 15000);
-            lp.add_constraint([Ignored, 110, 30], lpsolve_constr_types.LE, 4000);
-            lp.add_constraint([Ignored, 1, 1], lpsolve_constr_types.LE, 75);
+            for (var j = 0; j < targetJoltages.Length; j++)
+            {
+                var array = Enumerable.Range(0, columnCount).Select(k => buttons[k].Contains(j) ? 1 : 0)
+                    .Prepend(ignored)
+                    .Select(x => (double)x)
+                    .ToArray();
+                lp.add_constraint(array, lpsolve_constr_types.EQ, targetJoltages[j]);
+            }
             lp.set_add_rowmode(false);
 
-// We only want to see important messages on screen while solving
             lp.set_verbose(lpsolve_verbosity.IMPORTANT);
 
-// Now let lp_solve calculate a solution
-            lpsolve_return s = lp.solve();
-            if (s == lpsolve_return.OPTIMAL)
-            {
-                Console.WriteLine("Objective value: " + lp.get_objective());
+            var s = lp.solve();
+            if (s != lpsolve_return.OPTIMAL) 
+                continue;
 
-                var results = new double[Ncol];
-                lp.get_variables(results);
-                for (int j = 0; j < Ncol; j++)
-                {
-                    Console.WriteLine(lp.get_col_name(j + 1) + ": " + results[j]);
-                }
-            }
+            var results = new double[columnCount];
+            lp.get_variables(results);
+            var result = Math.Round(results.Sum());
+            steps += (long)result;
         }
 
-        return Consts.NoSolutionFound;
+        return steps.ToString();
     }
 }
